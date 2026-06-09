@@ -15,6 +15,9 @@
 | [Ping 网络检测与打印机连通性排查指南](printer-ping-network-check.md) | 使用 Ping、ipconfig、连续 Ping 和浏览器访问打印机后台来判断网络连通性。 |
 | [打印机驱动安装、卸载与重装指南](printer-driver-install-reinstall-guide.md) | 说明驱动安装、驱动包删除、干净重装、PCL / PS 驱动选择和企业统一驱动建议。 |
 | [打印乱码、格式错乱与输出异常排查指南](printer-garbled-output-troubleshooting.md) | 处理打印乱码、中文方框、PDF 打印错位、字体缺失、表格错乱和偶发输出异常等问题。 |
+| [共享打印机故障排查指南](shared-printer-troubleshooting.md) | 处理共享打印机无法连接、访问被拒绝、共享主机不可用、客户端驱动异常和防火墙阻止等问题。 |
+| [企业打印机部署规范与最佳实践](printer-enterprise-deployment-standard.md) | 说明企业环境中的打印机命名、固定 IP / DHCP 保留、TCP/IP 端口、官方驱动、设备登记和变更记录建议。 |
+| [打印机常见故障速查总表](printer-common-errors-quick-reference.md) | 汇总打印队列、脱机、IP 变化、Ping、端口、驱动、乱码和共享打印机等常见故障的快速判断方法。 |
 
 ## 推荐排查顺序
 
@@ -44,6 +47,10 @@ Windows 测试页是否正常
 驱动是否异常
 ↓
 是否存在乱码、字体或 PDF 渲染问题
+↓
+是否为共享打印机问题
+↓
+是否需要按企业部署规范统一配置
 ```
 
 ## 常用命令
@@ -76,6 +83,10 @@ del /Q /F %systemroot%\System32\spool\PRINTERS\*.*
 只有一台电脑异常
     ↓
 优先检查该电脑的驱动、端口、队列和软件设置
+
+共享打印机所有客户端异常
+    ↓
+优先检查共享主机是否开机、主机能否打印、共享权限和防火墙
 ```
 
 ## 推荐企业部署方案
@@ -92,4 +103,6 @@ Standard TCP/IP Port
 建立打印机设备登记表
         ↓
 记录驱动版本和安装包路径
+        ↓
+建立故障速查总表和变更记录
 ```

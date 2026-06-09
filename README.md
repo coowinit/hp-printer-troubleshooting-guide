@@ -2,26 +2,26 @@
 
 ![Platform](https://img.shields.io/badge/Platform-Windows-blue)
 ![Topic](https://img.shields.io/badge/Topic-Printer%20Troubleshooting-green)
-![Version](https://img.shields.io/badge/Version-v1.4.0-success)
+![Version](https://img.shields.io/badge/Version-v1.5.0-success)
 
-> 一个面向办公室和企业环境的中文打印机故障排查知识库，涵盖 Windows 打印队列、Print Spooler、打印缓存清理、WSD 与 TCP/IP 端口、网络打印机固定 IP、IP 变化、Ping 网络检测、打印机脱机、驱动安装重装、打印乱码和企业部署建议。
+> 一个面向办公室和企业环境的中文打印机故障排查知识库，涵盖 Windows 打印队列、Print Spooler、打印缓存清理、WSD 与 TCP/IP 端口、网络打印机固定 IP、IP 变化、Ping 网络检测、打印机脱机、驱动安装重装、打印乱码、共享打印机、企业部署规范和故障速查总表。
 
 ---
 
 ## 📌 当前版本
 
 ```text
-v1.4.0 - 新增打印机驱动安装、重装与打印乱码排查指南
+v1.5.0 - 新增共享打印机、企业部署规范和故障速查总表
 ```
 
-本版本在 v1.3.0 的脱机、IP 变化和 Ping 网络检测专题基础上，继续扩展打印机驱动与输出异常相关内容：
+本版本在 v1.4.0 的驱动安装、重装与打印乱码专题基础上，继续补充企业环境中更常见的共享打印、标准化部署和快速定位能力：
 
-- 打印机驱动安装、卸载与重装流程
-- 官方驱动、通用驱动、Windows 自动驱动的区别
-- PCL、PS、UFR、XPS 驱动语言的基础说明
-- 打印乱码、字体异常、PDF 打印错乱的排查方法
-- Windows 测试页正常但软件打印异常的判断思路
-- 企业环境统一驱动版本和端口配置建议
+- 共享打印机故障排查流程
+- 共享主机、权限、凭据、防火墙和客户端驱动检查方法
+- 企业打印机部署规范与最佳实践
+- 打印机命名、固定 IP / DHCP 保留、TCP/IP 端口和官方驱动统一建议
+- 打印机设备登记表、部署前检查清单和变更记录模板
+- 打印机常见故障速查总表，便于 Helpdesk 快速定位问题
 
 ---
 
@@ -61,6 +61,14 @@ v1.4.0 - 新增打印机驱动安装、重装与打印乱码排查指南
 | [打印机驱动安装、卸载与重装指南](docs/printer/printer-driver-install-reinstall-guide.md) | 说明打印机驱动安装、干净重装、官方驱动与通用驱动区别、PCL / PS 驱动选择和企业统一驱动建议。 |
 | [打印乱码、格式错乱与输出异常排查指南](docs/printer/printer-garbled-output-troubleshooting.md) | 处理打印乱码、中文方框、PDF 打印错位、字体缺失、表格错乱、偶发输出异常等问题。 |
 
+### 共享打印机与企业部署
+
+| 文档 | 说明 |
+|---|---|
+| [共享打印机故障排查指南](docs/printer/shared-printer-troubleshooting.md) | 处理共享打印机无法连接、访问被拒绝、共享主机不可用、客户端驱动异常和防火墙阻止等问题。 |
+| [企业打印机部署规范与最佳实践](docs/printer/printer-enterprise-deployment-standard.md) | 说明企业环境中打印机命名、固定 IP / DHCP 保留、TCP/IP 端口、官方驱动、设备登记和变更记录建议。 |
+| [打印机常见故障速查总表](docs/printer/printer-common-errors-quick-reference.md) | 汇总打印队列、脱机、IP 变化、Ping、端口、驱动、乱码和共享打印机等常见故障的快速判断方法。 |
+
 ---
 
 ## 🚀 快速处理流程
@@ -89,6 +97,10 @@ Ping 打印机 IP
 测试页异常：检查驱动 / 端口 / 打印机本体
     ↓
 必要时重装官方驱动
+    ↓
+如果是共享打印机，检查共享主机 / 权限 / 凭据 / 防火墙
+    ↓
+按企业部署规范统一 IP、端口、驱动和设备登记
 ```
 
 ---
@@ -138,7 +150,19 @@ PDF 是否需要作为图像打印
 字体是否缺失或未嵌入
 ```
 
-### 5. 企业部署类问题
+### 5. 共享打印机类问题
+
+优先查看：
+
+```text
+共享主机是否开机
+共享主机本机能否打印
+客户端能否访问 \\主机名
+共享权限 / Windows 凭据 / 防火墙
+客户端驱动是否匹配
+```
+
+### 6. 企业部署类问题
 
 优先采用：
 
@@ -146,8 +170,10 @@ PDF 是否需要作为图像打印
 DHCP 保留
 Standard TCP/IP Port
 官方驱动
+统一打印机命名
 统一设备登记表
 统一驱动版本
+故障速查表
 ```
 
 ---
@@ -169,7 +195,10 @@ printer-troubleshooting-knowledge-base/
 │       ├── printer-ip-changed.md
 │       ├── printer-ping-network-check.md
 │       ├── printer-driver-install-reinstall-guide.md
-│       └── printer-garbled-output-troubleshooting.md
+│       ├── printer-garbled-output-troubleshooting.md
+│       ├── shared-printer-troubleshooting.md
+│       ├── printer-enterprise-deployment-standard.md
+│       └── printer-common-errors-quick-reference.md
 ├── images/
 │   └── printer/
 └── scripts/
@@ -192,7 +221,6 @@ printer-troubleshooting-knowledge-base/
 计划继续补充：
 
 ```text
-v1.5.0 - 新增共享打印机、企业部署规范和故障速查总表
 v1.6.0 - 新增打印机扫描功能、纸盒/双面打印和耗材问题排查指南
 v2.0.0 - 整理为更完整的办公室打印机运维知识库
 ```
@@ -205,6 +233,8 @@ v2.0.0 - 整理为更完整的办公室打印机运维知识库
 Printer Troubleshooting
 Printer Driver
 Garbled Print
+Shared Printer
+Enterprise Deployment
 Print Spooler
 Printer Queue
 WSD Port
