@@ -213,5 +213,3 @@ printer-troubleshooting-knowledge-base/
 | 脚本 | 说明 |
 |---|---|
 | [clear-printer-queue.bat](scripts/windows/clear-printer-queue.bat) | 停止 Print Spooler、清空 Windows 打印缓存、重新启动 Print Spooler。 |
-
----
