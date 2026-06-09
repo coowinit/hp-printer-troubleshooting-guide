@@ -1,284 +1,140 @@
-# 🖨️ HP 网络打印机故障排查与 TCP/IP 端口优化指南
+# 🖨️ 打印机故障排查知识库
 
 ![Platform](https://img.shields.io/badge/Platform-Windows-blue)
-![Printer](https://img.shields.io/badge/Printer-HP%20LaserJet-green)
-![Status](https://img.shields.io/badge/Status-Resolved-success)
+![Topic](https://img.shields.io/badge/Topic-Printer%20Troubleshooting-green)
+![Version](https://img.shields.io/badge/Version-v1.1.0-success)
 
-> 一次真实的 HP LaserJet Professional M1216nfh MFP 网络打印机故障排查记录，涵盖 Print Spooler 修复、WSD 转 TCP/IP 端口优化以及企业环境最佳实践。
-
----
-
-## 📋 设备信息
-
-| 项目 | 内容 |
-|------|------|
-| 打印机型号 | HP LaserJet Professional M1216nfh MFP |
-| 连接方式 | 网络打印机 |
-| 原端口 | WSD |
-| 优化后端口 | Standard TCP/IP Port |
-| 当前 IP | 192.168.0.193 |
-| 操作系统 | Windows |
+> 一个面向办公室和企业环境的中文打印机故障排查知识库，涵盖 Windows 打印队列、Print Spooler、打印缓存清理、WSD 与 TCP/IP 端口、网络打印机 IP 检测和企业部署建议。
 
 ---
 
-## 🚨 故障现象
+## 📌 当前版本
 
-- 点击打印没有反应
-- 打印任务停留在队列中
+```text
+v1.1.0 - 新增打印队列卡住、Print Spooler 与清空缓存指南
+```
+
+本版本在原有 HP 网络打印机故障排查案例基础上，新增了更通用的 Windows 打印队列故障处理文档，适用于以下常见场景：
+
+- 打印任务一直卡在队列中
+- 点击打印后打印机没有任何反应
 - 测试页无法打印
-- Windows 显示“需要注意”
-- 打印机图标正常但无法输出
+- 删除打印任务失败
+- 打印队列显示“正在删除”但长时间不消失
+- Print Spooler 服务异常
+- 需要清空 Windows 打印缓存
 
 ---
 
-## 🔍 故障排查流程
+## 📚 文档导航
 
-```mermaid
-flowchart TD
-    A[无法打印] --> B[检查打印机状态]
-    B --> C[查看打印队列]
-    C --> D[重启 Print Spooler]
-    D --> E{测试页是否打印成功}
-    E -->|是| F[故障解决]
-    E -->|否| G[检查网络连接]
-    G --> H[检查打印机IP]
-    H --> I[重新配置端口]
+### 真实案例
+
+| 文档 | 说明 |
+|---|---|
+| [HP 网络打印机故障排查与 TCP/IP 端口优化指南](docs/printer/hp-network-printer-troubleshooting.md) | 基于 HP LaserJet Professional M1216nfh MFP 的真实故障处理记录，包含 Print Spooler 修复、WSD 转 TCP/IP 端口和企业部署建议。 |
+
+### v1.1.0 新增专题
+
+| 文档 | 说明 |
+|---|---|
+| [打印队列卡住、Print Spooler 与清空缓存指南](docs/printer/printer-queue-spooler-cache-guide.md) | 系统说明打印任务卡住的现象、原因、排查流程、Print Spooler 重启方法，以及手动清空 spool 打印缓存的完整步骤。 |
+
+---
+
+## 🚀 快速处理流程
+
+当用户反馈“打印不了”时，可以先按下面顺序判断：
+
+```text
+确认打印机开机
+    ↓
+检查打印队列是否卡住
+    ↓
+尝试取消异常任务
+    ↓
+重启 Print Spooler
+    ↓
+必要时清空 spool 打印缓存
+    ↓
+重新打印测试页
+    ↓
+若仍失败，再检查 IP、端口、驱动和网络
 ```
 
 ---
 
-## ✅ 第一步：检查打印机状态
+## 🧰 常用命令
 
-路径：
-
-```text
-控制面板
-└── 设备和打印机
-```
-
-确认以下项目：
-
-- [x] 打印机已识别
-- [x] 驱动安装正常
-- [x] 非脱机状态
-- [x] 默认打印机正常
-
----
-
-## ✅ 第二步：检查打印队列
-
-```text
-右键打印机
-└── 查看现在正在打印什么
-```
-
-如果发现：
-
-```text
-测试页
-↓
-持续停留在队列中
-↓
-打印机无任何动作
-```
-
-说明：
-
-> Windows 已生成打印任务，但未成功发送到打印机。
-
----
-
-## ✅ 第三步：重启 Print Spooler
-
-### 图形界面方式
-
-```text
-Win + R
-↓
-services.msc
-↓
-Print Spooler
-↓
-重新启动
-```
-
-### 命令行方式
+### 重启 Print Spooler
 
 ```cmd
 net stop spooler
 net start spooler
 ```
 
----
+### 清空打印缓存
 
-## 🎯 故障根因
-
-本次故障最终定位为：
-
-```text
-Print Spooler 服务异常
-```
-
-重启后：
-
-- ✅ 测试页恢复正常
-- ✅ 打印任务恢复
-- ✅ 打印机通信正常
-
----
-
-## ⚙️ WSD 与 TCP/IP 对比
-
-| 对比项 | WSD | TCP/IP |
-|----------|----------|----------|
-| 自动发现 | ✅ | ❌ |
-| 稳定性 | ⭐⭐ | ⭐⭐⭐⭐⭐ |
-| 企业环境 | ⭐⭐ | ⭐⭐⭐⭐⭐ |
-| 故障率 | 较高 | 较低 |
-| 推荐程度 | 不推荐长期使用 | 推荐 |
-
-### 推荐方案
-
-```text
-固定IP
-    ↓
-TCP/IP端口
-    ↓
-所有电脑统一连接
-```
-
----
-
-## 🔧 WSD 转 TCP/IP 操作步骤
-
-### 添加新端口
-
-```text
-打印机属性
-└── 端口
-    └── 添加端口
-        └── Standard TCP/IP Port
-```
-
-### 输入打印机 IP
-
-```text
-192.168.0.193
-```
-
-生成端口：
-
-```text
-IP_192.168.0.193
-```
-
-### 切换端口
-
-取消：
-
-```text
-WSD-xxxxxx
-```
-
-勾选：
-
-```text
-IP_192.168.0.193
-```
-
-保存并打印测试页。
-
----
-
-## 🌐 如何判断 IP 是否变化
-
-### Ping 测试
+> 建议以管理员身份运行命令提示符。
 
 ```cmd
-ping 192.168.0.193
+net stop spooler
+del /Q /F %systemroot%\System32\spool\PRINTERS\*.*
+net start spooler
 ```
-
-### 返回正常
-
-```text
-Reply from 192.168.0.193
-```
-
-说明：
-
-- 网络正常
-- 打印机在线
-
-### 返回失败
-
-```text
-Request timed out
-```
-
-可能原因：
-
-- 打印机关机
-- 网络异常
-- IP 已发生变化
 
 ---
 
-## 🛠️ 常见故障速查表
+## 🗂️ 推荐目录结构
 
-| 现象 | 原因 | 解决方案 |
-|--------|--------|--------|
-| 队列卡住 | Print Spooler异常 | 重启服务 |
-| 打印机脱机 | 网络异常 | 检查IP |
-| 测试页失败 | 端口异常 | 检查TCP/IP配置 |
-| 找不到打印机 | IP变更 | 重新发现设备 |
-| 打印缓慢 | WSD问题 | 改用TCP/IP |
+```text
+printer-troubleshooting-knowledge-base/
+├── README.md
+├── docs/
+│   └── printer/
+│       ├── hp-network-printer-troubleshooting.md
+│       └── printer-queue-spooler-cache-guide.md
+├── images/
+│   └── printer/
+└── scripts/
+    └── windows/
+        └── clear-printer-queue.bat
+```
 
 ---
 
-## 🏢 企业环境最佳实践
+## 📝 版本记录
 
-推荐由 IT 部门配置：
+### v1.1.0
 
-- 固定 IP 地址
-- DHCP 保留
-- TCP/IP 端口连接
-- 官方 HP 驱动
-- 统一部署
+- 新增打印队列卡住排查指南
+- 新增 Print Spooler 服务说明
+- 新增 Windows 打印缓存清理步骤
+- 新增命令行处理方式
+- 新增批处理脚本示例
+- 优化 README 首页导航结构
 
-避免：
+### v1.0.0
 
-- 长期使用 WSD
-- 自动获取不固定 IP
-- 使用通用驱动
+- 新增 HP 网络打印机故障排查案例
+- 新增 WSD 与 TCP/IP 端口对比
+- 新增网络打印机 IP 检测方法
+- 新增企业环境最佳实践建议
 
 ---
 
-## 📝 本次案例总结
-
-### 故障原因
+## 📚 关键词
 
 ```text
-Print Spooler 服务异常
-```
-
-### 解决方案
-
-```text
-重启 Print Spooler
-```
-
-### 优化方案
-
-```text
+Printer Troubleshooting
+Print Spooler
+Windows Printer
+Printer Queue
+Spool Cache
+Network Printer
+HP Printer
+TCP/IP Port
 WSD
-↓
-Standard TCP/IP Port
+IT Support
+Helpdesk
 ```
-
-### 最终结果
-
-- ✅ 打印功能恢复
-- ✅ 测试页正常
-- ✅ 网络通信正常
-- ✅ TCP/IP 优化完成
-
