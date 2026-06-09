@@ -13,6 +13,8 @@
 | [打印机脱机状态排查指南](printer-offline-troubleshooting.md) | 处理打印机显示脱机、状态异常、网络不通、端口错误和 Windows 误判脱机等问题。 |
 | [打印机 IP 变化导致无法打印排查指南](printer-ip-changed.md) | 说明打印机 IP 变化原因、旧端口失效的判断方法、端口 IP 修改和 DHCP 保留建议。 |
 | [Ping 网络检测与打印机连通性排查指南](printer-ping-network-check.md) | 使用 Ping、ipconfig、连续 Ping 和浏览器访问打印机后台来判断网络连通性。 |
+| [打印机驱动安装、卸载与重装指南](printer-driver-install-reinstall-guide.md) | 说明驱动安装、驱动包删除、干净重装、PCL / PS 驱动选择和企业统一驱动建议。 |
+| [打印乱码、格式错乱与输出异常排查指南](printer-garbled-output-troubleshooting.md) | 处理打印乱码、中文方框、PDF 打印错位、字体缺失、表格错乱和偶发输出异常等问题。 |
 
 ## 推荐排查顺序
 
@@ -37,7 +39,11 @@ Ping 打印机 IP 是否成功
 ↓
 是否需要固定 IP 或 DHCP 保留
 ↓
+Windows 测试页是否正常
+↓
 驱动是否异常
+↓
+是否存在乱码、字体或 PDF 渲染问题
 ```
 
 ## 常用命令
@@ -49,6 +55,27 @@ ipconfig
 ipconfig /all
 net stop spooler
 net start spooler
+del /Q /F %systemroot%\System32\spool\PRINTERS\*.*
+```
+
+## 常见判断逻辑
+
+```text
+测试页正常，但某个软件不能打印
+    ↓
+优先检查软件设置、文件内容、字体和 PDF 渲染方式
+
+测试页乱码或格式错乱
+    ↓
+优先检查驱动类型、驱动语言和打印机本体
+
+所有电脑连接同一台打印机都乱码
+    ↓
+优先检查打印机本体、固件、内存或耗材
+
+只有一台电脑异常
+    ↓
+优先检查该电脑的驱动、端口、队列和软件设置
 ```
 
 ## 推荐企业部署方案
@@ -58,9 +85,11 @@ net start spooler
         ↓
 Standard TCP/IP Port
         ↓
-官方驱动
+官方驱动 / 统一测试过的通用驱动
         ↓
 所有电脑统一连接
         ↓
 建立打印机设备登记表
+        ↓
+记录驱动版本和安装包路径
 ```
